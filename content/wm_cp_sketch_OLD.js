@@ -1,6 +1,6 @@
 void setup() {
 	
-	size(500, 500)
+	size(1000, 700)
 	frameRate(60)
 
 	pts = []
