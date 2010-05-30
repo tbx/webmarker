@@ -13,10 +13,16 @@ __          __   _                          _
           - Based on GML and the 000000book.com API/ GML Database
 */
 
+// mock console.log() if no Firebug etc. 
+if(!console || !console.log) {
+	var console = new Array();
+	console.log = function () {}
+}
+
 //***************Global Vars*****************
 //*******************************************
-var wm_stroke_size = 30;
-var wm_color = '#FF00FF';
+var wm_stroke_size = 30;	// set default stroke size to 30
+var wm_color = '#FF00FF'; 	// set default color to pink
 
 var wm_dripping = 0; // Not Implemented yet
 var wm_location = window.location;
@@ -33,11 +39,7 @@ var letzte_zeit_verstrichen=0;
 var letzter_speicher_wert=0;
 var myCanvas;
 
-// mock console.log() if no Firebug etc. 
-if(!console || !console.log) {
-	var console = new Array();
-	console.log = function () {}
-}
+
 console.log("YAY! wm_code.js LOADED");
 
 
@@ -76,16 +78,16 @@ control_panelCode = ' \
 			<td> </td> \
 		</tr> \
 		<tr> \
-			<td>Tip Size<a href="javascript:testAusgabe();" style="text-decoration:none;">: \
+			<td>Tip Size<a href="javascript:wm_write_gml_to_console();" style="text-decoration:none;">: \
 				</a> \
 			</td> \
 		</tr> \
 		<tr> \
 			<td> \
-				<input type="radio"name="wb_marker_size"onclick="change_marker_size(\'5\');createCanvasOverlay(\'rgba(0,0,0,0)\')">S</br> \
-				<input type="radio"name="wb_marker_size"onclick="change_marker_size(\'10\');createCanvasOverlay(\'rgba(0,0,0,0)\')">M</br> \
-				<input type="radio"name="wb_marker_size"onclick="change_marker_size(\'17\');createCanvasOverlay(\'rgba(0,0,0,0)\')">L</br> \
-				<input type="radio"name="wb_marker_size"onclick="change_marker_size(\'30\');createCanvasOverlay(\'rgba(0,0,0,0)\')" checked>XL</br> \
+				<input type="radio"name="wb_marker_size"onclick="wm_change_marker_size(\'5\');createCanvasOverlay(\'rgba(0,0,0,0)\')">S</br> \
+				<input type="radio"name="wb_marker_size"onclick="wm_change_marker_size(\'10\');createCanvasOverlay(\'rgba(0,0,0,0)\')">M</br> \
+				<input type="radio"name="wb_marker_size"onclick="wm_change_marker_size(\'17\');createCanvasOverlay(\'rgba(0,0,0,0)\')">L</br> \
+				<input type="radio"name="wb_marker_size"onclick="wm_change_marker_size(\'30\');createCanvasOverlay(\'rgba(0,0,0,0)\')" checked>XL</br> \
 			</td> \
 		</tr> \
 		<tr> \
@@ -287,7 +289,8 @@ function wm_delete_all()
 // *************************************************************************************************
 var wm_toggle_status = 3;
 var wm_street_status_was = 0;
-function wm_toggle(){
+function wm_toggle()
+{
 	if(wm_toggle_status == 1) { 
 		//alert("Panel ON -> Switching it off");
 		window.document.getElementById('control_panel').style.visibility='hidden';
@@ -328,7 +331,8 @@ function wm_start(color) // this is the onclick handler for the color selection 
 
 // handler to initialize on page load if ?test=1 is in the URL
 document.addEventListener('DOMContentLoaded', wm_init_handler, false);
-function wm_init_handler(event){
+function wm_init_handler(event)
+{
 	if( /test=1/.test(window.location.href) ){		
 		wm_start("#00FF00");
 	} 
@@ -336,15 +340,15 @@ function wm_init_handler(event){
 
 // ******* Change stroke color *******
 // ***********************************
-function wm_change_color (new_color) 
+function wm_change_color(new_color) 
 {
-	// alert('Color SET to '+ new_color);
+	//alert('Color SET to '+ new_color);
 	wm_color = new_color;
 }
 
 // ****** Change brush size *******
 // ********************************
-function change_marker_size(size) 
+function wm_change_marker_size(size) 
 {
 	wm_stroke_size = size;
 //	alert("width set to" + wm_stroke_size);
@@ -353,10 +357,10 @@ function change_marker_size(size)
 // ***** GML Test Function ******
 // Note: Link is hidden in Tip Size":"
 // ******************************
-function testAusgabe()
+function wm_write_gml_to_console()
 {
 	var wm_gml_data = points + "</drawing></tag></GML>";
-    alert(wm_gml_data);   
+    console.log(wm_gml_data);   
 }
 
 
@@ -376,7 +380,6 @@ function wm_street_mode() {
 			toggle_street_mode();
 			//window.location.reload(); // Shitty solution but... yeah.
 		}
-		
 }
 
 function toggle_street_mode() { // = Canvas Player ON
@@ -396,18 +399,19 @@ else if (wm_street_status == 1) {
 	// Load Canvas Player Drawing Script
 	//console.log("wm_sm is 1 -> activate player");
 	
-	//again, we have to do this, cause of security reasons, a website can't call a function in the add-on
-	var GM_JQ = document.createElement('script');
-    GM_JQ.src = 'chrome://webmarker/content/wm_cp_drawing.js';
-    GM_JQ.type = 'text/javascript';
-    document.getElementsByTagName('head')[0].appendChild(GM_JQ);
+	// append script wm_cp_drawing.js to website head
+	var script_cp_drawing 		= document.createElement('script');
+    script_cp_drawing.src 		= 'chrome://webmarker/content/wm_cp_drawing.js';
+    script_cp_drawing.type 		= 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script_cp_drawing);
 
-    
-	// Load Processing
-	var GM_JQ2 = document.createElement('script');
-    GM_JQ2.src = 'chrome://webmarker/content/processing.min.js';
-    GM_JQ2.type = 'text/javascript';
-    document.getElementsByTagName('head')[0].appendChild(GM_JQ2);
+	// append script processing.min.js to website head
+	var script_processing_min 	= document.createElement('script');
+    script_processing_min.src 	= 'chrome://webmarker/content/processing.min.js';
+    script_processing_min.type 	= 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(script_processing_min);
+	
+
 
 	/* // Saidly acted weird.
 	// div popup stuff start 
@@ -422,15 +426,14 @@ else if (wm_street_status == 1) {
     */
    
 	//Canvas Players Canvas
+	/*
 	var wm_cp_canvas;
     wm_cp_canvas = document.createElement('canvas');
     //wm_cp_canvas.innerHTML = wm_cp_canvasCode;  //wm_cp_canvasCode is a string of HTML
     wm_cp_canvas.setAttribute("style","width: 100%; height: 100%; position:absolute; pointer-events:none; z-index:1001; top:0px; right:0px; left:0px;");
     wm_cp_canvas.setAttribute("id","canvas");
-    document.getElementsByTagName("body")[0].appendChild(wm_cp_canvas);
-
-	
-	} 
+    document.getElementsByTagName("body")[0].appendChild(wm_cp_canvas);*/
+	}
 	//***FIRST RUN, set Status to 0*** // Does this even make sense? hahaha I forgot /TBX
 	else if (wm_street_status == 123) { // On Pageload
 		//alert("Hell Yes Street Mode!");
@@ -442,4 +445,4 @@ else if (wm_street_status == 1) {
 
 }
 
-toggle_street_mode(); // just so the function gets initionally launched
+toggle_street_mode(); // just so the function gets initially called
