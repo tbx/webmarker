@@ -319,8 +319,6 @@ function wm_toggle()
 	}*/
 }
 
-
-
 //********** Select Color and start DRAWING!!*************
 //********************************************************
 function wm_start(color) // this is the onclick handler for the color selection buttons, which start the whole process
@@ -424,15 +422,6 @@ else if (wm_street_status == 1) {
     div_loading.setAttribute("id","tag_id");
     document.getElementsBydiv_loadingName("body")[0].appendChild(div_loading);
     */
-   
-	//Canvas Players Canvas
-	/*
-	var wm_cp_canvas;
-    wm_cp_canvas = document.createElement('canvas');
-    //wm_cp_canvas.innerHTML = wm_cp_canvasCode;  //wm_cp_canvasCode is a string of HTML
-    wm_cp_canvas.setAttribute("style","width: 100%; height: 100%; position:absolute; pointer-events:none; z-index:1001; top:0px; right:0px; left:0px;");
-    wm_cp_canvas.setAttribute("id","canvas");
-    document.getElementsByTagName("body")[0].appendChild(wm_cp_canvas);*/
 	}
 	//***FIRST RUN, set Status to 0*** // Does this even make sense? hahaha I forgot /TBX
 	else if (wm_street_status == 123) { // On Pageload
