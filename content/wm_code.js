@@ -32,9 +32,11 @@ var last_memory_data = new Date().getTime();
 var testx = 0;
 var testy = 0;
 var timeSeconds = 0;
-var points = "<GML spec='0.1b'><tag><header><client><location>" + wm_location + "</location><name>Webmarker.me</name><version>0.4b</version><username>" + wm_username + "</username><keywords>All your Interwebs are belong to Us</keywords></client></header><environment></environment><drawing>"; 
+var points = "";
+var points_opening_tag = "<GML spec='0.1b'><tag><header><client><location>" + wm_location + "</location><name>Webmarker.me</name><version>0.4b</version><username>" + wm_username + "</username><keywords>All your Interwebs are belong to Us</keywords></client></header><environment></environment><drawing>"; 
+var points_closing_tag = "</drawing></tag></GML>"
 var points_reset_backup = "<GML spec='0.1b'><tag><header><client><location>" + wm_location + "</location><name>Webmarker.me</name><version>0.4b</version><username>" + wm_username + "</username><keywords>All your Interwebs are belong to Us</keywords></client></header><environment></environment><drawing>"; // Always a copy of points in here.
-var wm_gml_data = points + "</drawing></tag></GML>" // FINAL GML DATA for 000000book.com
+//var wm_gml_data = points + "</drawing></tag></GML>" // FINAL GML DATA for 000000book.com
 var letzte_zeit_verstrichen=0;
 var letzter_speicher_wert=0;
 var myCanvas;
@@ -111,6 +113,10 @@ control_panel.innerHTML = control_panelCode;  //control_panelCode is a string of
 control_panel.setAttribute("style","position:absolute;z-index:1011;top:5px;right:5px;background:yellow;");
 document.getElementsByTagName("body")[0].appendChild(control_panel);
 
+// get upload button and disable it when the script starts
+var upload_button = document.getElementById('wm_publish');
+upload_button.setAttribute('disabled','true');
+
 
 //*******TO-DO Generate Image From Canvas********
 //***********************************************
@@ -127,20 +133,28 @@ function generate_png(sourceCanvas) {
 //***********************************************
 // add the GML data to the form in the upload page (requires pageload)
 // need to add GET to blackbook in order to ajaxify
-function appendGMLToForm() // 
+function appendGMLToForm()
 {
-	var wm_gml_data = points + "</drawing></tag></GML>"; // FINAL GML DAT - Put this here, cause it couldn't find the global one. hm.
-	//alert("Your GML Data: " + wm_gml_data);
-	form = document.getElementById('wm_upload'); //todo find it by id etc -done./tbx
-	var m = document.createElement('input');
-	m.setAttribute('type', 'hidden');
-	m.setAttribute('name', 'gml');
-	m.setAttribute('value', wm_gml_data);
-	form.appendChild(m);
-	// we return false from the onclick() so we can call here
-	//form.submit();
-	window.location.reload();
-	//e.preventDefault();
+	if(points === '')
+	{
+			alert('points empty');
+			console.log('points list empty. please draw something.');	
+	}
+	else
+	{
+		var wm_gml_data = points_opening_tag + points + points_closing_tag;
+		//alert("Your GML Data: " + wm_gml_data);
+		form = document.getElementById('wm_upload');
+		var m = document.createElement('input');
+		m.setAttribute('type', 'hidden');
+		m.setAttribute('name', 'gml');
+		m.setAttribute('value', wm_gml_data);
+		form.appendChild(m);
+		// we return false from the onclick() so we can call here
+		//form.submit();
+		window.location.reload();
+		//e.preventDefault();
+	}
 }
 
 // after GET upload is added to 000book we can send things ajax-styles by appending a <script>
@@ -173,9 +187,10 @@ document.getElementsByTagName('body')[0].appendChild(s);
       }
       else
         superContainer=canvasContainer; // I actually don't get this syntax!? -TBX
-
+		// if you don't give the createCanvasOverlay function a canvas container as parameter, it uses the body as default container
+		// otherwise it uses the container you gave the function as parameter -fstr
       {
-      myCanvas = document.createElement('canvas');    
+      myCanvas = document.createElement('canvas');
       myCanvas.style.width = superContainer.scrollWidth+"px";
       myCanvas.style.height = superContainer.scrollHeight+"px";
       myCanvas.width=superContainer.scrollWidth; // otherwise the canvas will be streethed to fit the container
@@ -248,6 +263,8 @@ function onMouseUpOnMyCanvas(event)
 {	
 	if(myCanvas.pathBegun == true){
 		points = points + "</stroke>";
+		// points list filled, so activate the upload button
+		upload_button.removeAttribute('disabled');
 	}
 }
 
@@ -258,7 +275,7 @@ function onMouseClickOnMyCanvas(event)
 	// reset the path when starting over
 	// if drawing is active
 	if (myCanvas.drawing) { 
-    myCanvas.pathBegun = false; 
+		myCanvas.pathBegun = false; 
 	}
 }
 
@@ -270,20 +287,6 @@ function hideCanvas() // Hide last drawn Canvas. Kind of like "undo", but only v
     }
 }
 */
-
-//******** Reset Canvases, empty GML********
-//******************************************
-function wm_delete_all()
-{
-    if (myCanvas)
-    {
-      var all_canvases=document.getElementsByTagName('canvas');//[0].style.visibility='hidden';
-		  for (var i = 0; i < all_canvases.length; i++) {all_canvases[i].width=all_canvases[i].width;}
-		  points = points_reset_backup; // Empty the variable that later becomes GML (missing ending)
-	  //alert(points);
-    }
-}
-
 
 // ********Show/Hide Control Panel + Deactivate Street Mode + Remember street mode status***********
 // *************************************************************************************************
@@ -325,6 +328,21 @@ function wm_start(color) // this is the onclick handler for the color selection 
 {	
 	wm_change_color(color); // initialze a canvas! with a stroke color yay!
 	createCanvasOverlay('rgba(0,0,0,0)');	
+}
+
+//******** Reset Canvases, empty GML points list ********
+//*******************************************************
+function wm_delete_all()
+{
+    if (myCanvas)
+    {
+      var all_canvases=document.getElementsByTagName('canvas');
+		  for (var i = 0; i < all_canvases.length; i++) {all_canvases[i].width=all_canvases[i].width;}
+		  // delete current GML points list
+		  points = ''; 
+		  // disable upload button because points list is empty 
+		  upload_button.setAttribute('disabled','true');
+    }
 }
 
 // handler to initialize on page load if ?test=1 is in the URL
