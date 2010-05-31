@@ -15,14 +15,6 @@ __          __   _                          _
 
 console.log("YAY! wm_cp_drawing.js LOADED");
 
-/* these functions seem to be copied in here for no reason, hex2rgb didn't even work */
-//function inspect(obj, maxLevels, level){var str = '', type, msg, indent = ''; for(var i=0; i<level; i++) indent += '  ';if(level == null)  level = 0;if(maxLevels == null) maxLevels = 1; if(maxLevels < 1) return 'Error: Levels number must be > 0';if(obj == null)return 'Error: Object NULL';for(property in obj){try{type =  typeof(obj[property]);str += indent+'(' + type + ') ' + property + ( (obj[property]==null)?(': NULL'):('')) + "\n";if((type == 'object') && (obj[property] != null) && (level+1 < maxLevels))str += inspect(obj[property], maxLevels, level+1);}catch(err){if(typeof(err) == 'string') msg = err;else if(err.message) msg = err.message;else if(err.description) msg = err.description;else msg = 'Unknown';str += '(Error) ' + property + ': ' + msg +"\n";}}return str;}
-//function rgb2hex(str) {str = str.replace(/\s/g, "").replace(/^(rgb\()(\d+),(\d+),(\d+)(\))$/, "$2|$3|$4").split("|"); return "#" + hex(str[0]) + hex(str[1]) + hex(str[2]);}
-//function hex2rgb(str) {if (str.match(/^(DefaultColor)/i)) return str.replace(/^(DefaultColor\()(.*)(\))$/ig, '$2'); str = str.replace(/\#/g, "").match(/^(([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})|([0-9a-f]{1})([0-9a-f]{1})([0-9a-f]{1}))$/i); return (str ? rgb(str[2]) +','+ rgb(str[3]) +','+ rgb(str[4]) : '255,0,255');}
-//function hex(x) {var hexDigits = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8","9", "A", "B", "C", "D", "E", "F"); return isNaN(x) ? "00" : hexDigits[(x-x%16)/16] + hexDigits[x%16];}
-//function rgb(x) {return isNaN(x) ? "0" : parseInt(x, 16);}
-
-
 function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
 
 function hex2rgb2(hexcolor)
@@ -78,11 +70,11 @@ function load_gml(data)
 					pts_opts = pts_opts.concat({stroke: (strokes[j].stroke_size || 30), color: (hex2rgb2(strokes[j].color) || '255,0,255'), drips: (strokes[j].dripping || false)}); 
 				}
 
-				
+				// create global vars on demand
 				eval("pts" + i + " = pts");
 			    eval("pts_opts" + i + " = pts_opts");
 
-				/* appending sketch script for current tag to its script tag */
+				// appending sketch script for current tag to its script tag
 				document.getElementById('sketch'+i).innerHTML = " \
 				function setup() { \
 				  size(1000, 800); \
