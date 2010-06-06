@@ -35,15 +35,12 @@ function load_gml(data)
 		gml_ids = new Array(data.length);
 		gml_gml = new Array(data.length);
 		console.log(data.length + ' GML objects received');
-		
-		
-		
-		var draw_count = 10; // only show latest 10 tags
-		if(data.length < 10)
-		 draw_count = data_length;
 
-		for(var i=0; i<draw_count; i++) {
 		
+		var gml_max_count = 10; // only show latest x tags
+		if(data.length < gml_max_count)
+		  gml_max_count = data.length;     
+		for(var i=0;  i <= gml_max_count; i++) {
 		
 		//for(var i=0; i<data.length; i++) {
 			if (typeof(data[i]) != 'undefined') {
