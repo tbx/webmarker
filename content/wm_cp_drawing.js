@@ -35,7 +35,17 @@ function load_gml(data)
 		gml_ids = new Array(data.length);
 		gml_gml = new Array(data.length);
 		console.log(data.length + ' GML objects received');
-		for(var i=0; i<data.length; i++) {
+		
+		
+		
+		var draw_count = 10; // only show latest 10 tags
+		if(data.length < 10)
+		 draw_count = data_length;
+
+		for(var i=0; i<draw_count; i++) {
+		
+		
+		//for(var i=0; i<data.length; i++) {
 			if (typeof(data[i]) != 'undefined') {
 				gml = data[i].gml;
 				//console.log(gml);
@@ -154,7 +164,7 @@ else if(/random/.test(document.location.href)){ tag_id = 'random'; }
 // append the appropriate <script> tag
 var s=document.createElement('script');
 //s.setAttribute('src','http://000000book.com/data/'+tag_id+'.json?callback=load_gml');
-s.setAttribute('src','http://000000book.com/data.json?location='+ document.location.href +'&callback=load_gml');
+s.setAttribute('src','http://000000book.com/data.json?location='+ document.location.href +'&callback=load_gml&redirect_back=1');
 //http://000000book.com/data.json?location=http://google.com/
 s.setAttribute('id','drawing_stuff');
 document.getElementsByTagName('body')[0].appendChild(s);
