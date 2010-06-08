@@ -8,8 +8,7 @@ __          __   _                          _
 
           Webmarker Firefox Add-on, visit: www.webmarker.me
 
-          - By Tobias Leingruber, Greg Leuch 
-          - Contributors: Jamie Wilkinson, Florian Strübe
+          - Authors: Tobias Leingruber, Greg Leuch, Jamie Wilkinson, Florian Strübe
           - Based on GML and the 000000book.com API/ GML Database
 */
 
@@ -35,23 +34,13 @@ function load_gml(data)
 		gml_ids = new Array(data.length);
 		gml_gml = new Array(data.length);
 		console.log(data.length + ' GML objects received');
-<<<<<<< HEAD
-
-		
-		var gml_max_count = 10; // only show latest x tags
-		if(data.length < gml_max_count)
-		  gml_max_count = data.length;     
-		for(var i=0;  i <= gml_max_count; i++) {
-		
 		//for(var i=0; i<data.length; i++) {
-=======
 
-		var draw_count = 10; // only show latest 10 tags
-		if(data.length < 10)
-		 draw_count = data_length;
-
-		for(var i=0; i<draw_count; i++) {
->>>>>>> 549cbe8d641481066999d41e6d0ee44a4b3a9100
+			var gml_max_count = 10; // only show the latest 10 tags
+			if(data.length < 10)
+			   gml_max_count = data.length;
+			for(var i=0; i<gml_max_count; i++) {
+				
 			if (typeof(data[i]) != 'undefined') {
 				gml = data[i].gml;
 				//console.log(gml);
