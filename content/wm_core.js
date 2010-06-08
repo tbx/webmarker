@@ -432,7 +432,7 @@ else if (wm_street_status == 1) {
 	
 	// append script wm_cp_drawing.js to website head
 	var script_cp_drawing 		= document.createElement('script');
-    script_cp_drawing.src 		= 'chrome://webmarker/content/wm_cp_drawing.js';
+    script_cp_drawing.src 		= 'chrome://webmarker/content/wm_canvasplayer.js';
     script_cp_drawing.type 		= 'text/javascript';
     document.getElementsByTagName('head')[0].appendChild(script_cp_drawing);
 
