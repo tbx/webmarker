@@ -11,7 +11,7 @@ __          __   _                          _
           - Authors: Tobias Leingruber, Greg Leuch, Jamie Wilkinson, Florian Strübe
           - Based on GML and the 000000book.com API/ GML Database
 
-					Note: This file is a fork of Jamie Wilkinson's canvasplayer http://github.com/jamiew/canvasplayer
+			Note: This file is a fork of Jamie Wilkinson's canvasplayer http://github.com/jamiew/canvasplayer
 */
 
 console.log("YAY! wm_canvasplayer.js LOADED");
@@ -36,14 +36,15 @@ function load_gml(data)
 		gml_ids = new Array(data.length);
 		gml_gml = new Array(data.length);
 		console.log(data.length + ' GML objects received');
-		//for(var i=0; i<data.length; i++) {
-
-			var gml_max_count = 10; // only show the latest 10 tags
-			if(data.length < 10)
-			   gml_max_count = data.length;
-			for(var i=0; i<gml_max_count; i++) {
-				
-			if (typeof(data[i]) != 'undefined') {
+		var gml_max_count = 3;
+		
+		if(data.length < gml_max_count)
+			gml_max_count = data.length;	
+		
+		for(var i=0;  i < gml_max_count; i++) 
+		{	
+			if (typeof(data[i]) != 'undefined') 
+			{
 				gml = data[i].gml;
 				//console.log(gml);
 						
@@ -73,14 +74,16 @@ function load_gml(data)
 				pts_opts = []; 
 				strokes = (gml.tag.drawing.stroke instanceof Array ? gml.tag.drawing.stroke : [gml.tag.drawing.stroke]); 
 				for(j in strokes){ 
-					pts = pts.concat(strokes[j].pt); 
+					pts 		= pts.concat(strokes[j].pt); 
+					pts_opts 	= pts_opts.concat({stroke: (strokes[j].stroke_size || 30), color: (hex2rgb2(strokes[j].color) || '255,0,255'), drips: (strokes[j].dripping || false)}); 
+					
 					pts.push(undefined); //blank obj to indicate new stroke
-					pts_opts = pts_opts.concat({stroke: (strokes[j].stroke_size || 30), color: (hex2rgb2(strokes[j].color) || '255,0,255'), drips: (strokes[j].dripping || false)}); 
 				}
 
 				// create global vars on demand
 				eval("pts" + i + " = pts");
 			    eval("pts_opts" + i + " = pts_opts");
+				eval("strokeCount" + i + " = 0");
 
 				// appending sketch script for current tag to its script tag
 				document.getElementById('sketch'+i).innerHTML = " \
@@ -95,7 +98,7 @@ function load_gml(data)
 				  } else { \
 					  rotation = 0; \
 					  translation = [0, 0]; \
-					  console.log('Other appplication source: '+app_name); \
+					  console.log('Unknown appplication source: '+app_name); \
 					} console.log('rotation='+rotation+' translation='+translation); \
 				}; \
 				function draw() { \
@@ -110,6 +113,7 @@ function load_gml(data)
 					b_canvas.width = b_canvas.width; \
 				  } \
 				  if(pt == undefined || pt == []){ \
+					strokeCount"+i+"++; \
 					return; \
 				  } \
 				  if(prev == undefined || prev == []){ \
@@ -119,8 +123,8 @@ function load_gml(data)
 				  dimy = (prev.y -pt.y)*height; \
 				  translate(translation[0], translation[1]); \
 				  rotate(rotation); \
-				  strokeWeight(pts_opts"+i+"[0]['stroke']); \
-				  var colors = pts_opts"+i+"[0]['color'].split(','); \
+				  strokeWeight(pts_opts"+i+"[strokeCount"+i+"]['stroke']); \
+				  var colors = pts_opts"+i+"[strokeCount"+i+"]['color'].split(','); \
 				  stroke(colors[0],colors[1],colors[2]); \
 				  line(prev.x*width, prev.y*height, pt.x*width, pt.y*height);}";
 				
@@ -162,7 +166,7 @@ else if(/random/.test(document.location.href)){ tag_id = 'random'; }
 // append the appropriate <script> tag
 var s=document.createElement('script');
 //s.setAttribute('src','http://000000book.com/data/'+tag_id+'.json?callback=load_gml');
-s.setAttribute('src','http://000000book.com/data.json?location='+ document.location.href +'&callback=load_gml&redirect_back=1');
+s.setAttribute('src','http://000000book.com/data.json?location='+ document.location.href +'&callback=load_gml');
 //http://000000book.com/data.json?location=http://google.com/
 s.setAttribute('id','drawing_stuff');
 document.getElementsByTagName('body')[0].appendChild(s);
