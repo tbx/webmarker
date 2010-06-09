@@ -74,6 +74,7 @@ function load_gml(data)
 				strokes = (gml.tag.drawing.stroke instanceof Array ? gml.tag.drawing.stroke : [gml.tag.drawing.stroke]); 
 				for(j in strokes){ 
 					pts = pts.concat(strokes[j].pt); 
+					pts.push(undefined); //blank obj to indicate new stroke
 					pts_opts = pts_opts.concat({stroke: (strokes[j].stroke_size || 30), color: (hex2rgb2(strokes[j].color) || '255,0,255'), drips: (strokes[j].dripping || false)}); 
 				}
 
