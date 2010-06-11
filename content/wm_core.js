@@ -99,7 +99,7 @@ control_panelCode = ' \
 				<input id="wm_publish" type="submit" value="Upload" /> \
 				<input type="hidden" name="application" value="Webmarker" /> \
 				<!-- below tells #000000book to send us to the page it created, and not just return the ID --> \
-				<input type="hidden" name="redirect" value="true" /> \
+				<input type="hidden" name="redirect_back" value="true" /> \
 			</form> \
 			<a href="http://000000book.com/data?app=Webmarker" style="font-size:11px;">000000book</a> \
 		</td> \
@@ -151,7 +151,7 @@ function appendGMLToForm()
 		form.appendChild(m);
 		// we return false from the onclick() so we can call here
 		//form.submit();
-		window.location.reload();
+		//window.location.reload();
 		//e.preventDefault();
 	}
 }
